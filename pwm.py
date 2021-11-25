@@ -1,15 +1,15 @@
 import RPi.GPIO as GPIO     
 import time
 
-led = 21                
-trigger = 18                
-echo = 24         
-
-
-GPIO.setmode(GPIO.BCM)  
+GPIO.setmode(GPIO.GROUND)  
 GPIO.setup(led, GPIO.OUT)      
 GPIO.setup(trigger, GPIO.OUT)  
 GPIO.setup(echo, GPIO.IN)     
+
+
+led = 40                
+trigger = 12                
+echo = 18 
 
 pwm = GPIO.PWM(led, 100)       
 pwm.start(0)                 
@@ -22,7 +22,6 @@ def distance():
 
     Start = time.time()
     Stop = time.time()
-
 
     while GPIO.input(echo) == 0:
         Start = time.time()
@@ -37,15 +36,19 @@ try:
     while 1:                    
 
         dist = distance()
-        print ("Measured Distance = %.1f cm" % dist) 
-
-        if (dist > 400):         #  range of the sensor is 400 cm
-            x = 0                
-        else:
-            x = 100 - (dist / 4) 
-
-        pwm.ChangeDutyCycle(x)  
-        time.sleep(0.01)       
+        print (" Distance = %.1f cm" % dist)         
+       if(dist > 40):
+          pwm.ChangeDutyCycle(30)
+          time.sleep(2)
+       elif(dist > 25 and dist <40):
+          pwm.ChangeDutyCycle(60)
+          time.sleep(2)
+       elif(dist > 15 and dist <25):
+          pwm.ChangeDutyCycle(100) 
+          time.sleep(2)
+       else:
+          pwm.ChangeDutyCycle(20)
+          time.sleep(2)
 
 
 except KeyboardInterrupt:
